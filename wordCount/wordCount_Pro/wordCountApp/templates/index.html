@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>자기소개를 해보세요</h1>
+    <span style="background-color: pink">컴퓨터공학전공</span>
+    <form action="{% url 'hello' %}">
+      <textarea name="myname" cols="20" rows="1"></textarea>
+      <input type="submit" value="확인" />
+    </form>
+    <a href="{% url 'wordCount' %}">wordCount 페이지로 가기!</a>
+  </body>
+</html>
