@@ -14,9 +14,17 @@
 
     <h1>단어 카운트:</h1>
     {% for word, frequency in dictionary %} {{word}} : {{frequency}}
+
     <br />
 
     {% endfor %}
+
+    <h1>글자 수 세기:</h1>
+    {{characters}}자
+
+    <h1>띄어쓰기 제외 글자 수 세기:</h1>
+    {{characters_nospace}}자
+    <br />
     <br />
     <a href="{% url 'wordCount' %}">다시하기</a>
   </body>
