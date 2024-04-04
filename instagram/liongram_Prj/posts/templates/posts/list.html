@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>덕멋 인스타그램</h1>
+    <form action="{% url 'result' %}">
+      <input type="text" name="data" />
+      <input type="submit" value="검색" />
+    </form>
+
+    {% for post in posts %}
+    <h2>이름 : {{ post.title }}</h2>
+    <p>전화번호: {{ post.content }}</p>
+    <hr />
+
+    {% empty %} 등록된 포스트가 없습니다. {% endfor %}
+  </body>
+</html>
