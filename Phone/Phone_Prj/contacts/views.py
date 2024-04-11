@@ -1,16 +1,37 @@
-from django.shortcuts import render
+from django.views.generic import ListView
 from .models import Phone
 
-def list(request):
-    contacts = Phone.objects.all().order_by('name')
-    return render(request, 'contacts/list.html', {'contacts': contacts})
 
-def result(request):
+class List(ListView):
+    queryset = Phone.objects.all().order_by('name')
+    template_name = 'contacts/list.html'
+    context_object_name = 'contacts'
 
-    if 'data' in request.GET:
-        name = request.GET['data']
-        contacts = Phone.objects.filter(name__contains=name).order_by('name')
-    else:
-        contacts = Phone.objects.all().order_by('name')
+class Result(ListView):
+    template_name = 'contacts/result.html'
+    context_object_name = 'contacts'
 
-    return render(request, 'contacts/result.html', {'data': name, 'contacts': contacts})
+    def get_queryset(self):
+        self.data = self.request.GET.get('data', '')  
+        return Phone.objects.filter(name__contains=self.data).order_by('name')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['data'] = self.data
+        return context
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
