@@ -9,8 +9,8 @@
     <h2>"{{ data }}" - 검색 결과</h2>
 
     {% for post in posts %}
-    <h2>이름 : {{ post.title }}</h2>
-    <p>전화번호: {{ post.content }}</p>
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.content }}</p>
     <hr />
     {% empty %} 검색된 글이 없습니다 {% endfor %}
   </body>
