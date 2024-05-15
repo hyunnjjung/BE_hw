@@ -6,10 +6,25 @@
     <title>Document</title>
   </head>
   <body>
-    <a href="{% url 'create' %}"> 글작성하기</a>
+    {% if request.user.is_authenticated %} {{ request.user.nickname }}님
+    환영합니다
+    <br />
+    <br />
+    <a href="{% url 'accounts:logout' %}">로그아웃</a>
+    <a href="{% url 'accounts:mypage' %}">마이페이지</a>
+    {% else %}
+    <a href="{% url 'accounts:login' %}">로그인</a>
+    <a href="{% url 'accounts:signup' %}">회원가입</a>
+    {% endif %}
+    <br />
+    <br />
+    <br />
+    <hr />
+    <a href="{% url 'blog:create' %}"> 글작성하기</a>
+
     <hr />
     {% for post in posts %}
-    <h2><a href="{% url 'detail' post.id %}"> {{post.title}}</a></h2>
+    <h2><a href="{% url 'blog:detail' post.id %}"> {{post.title}}</a></h2>
     <p>{{ post.content }}</p>
     <p>작성일 - {{ post.created_at }}</p>
     <hr />
