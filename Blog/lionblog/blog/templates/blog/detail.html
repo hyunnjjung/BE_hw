@@ -6,13 +6,47 @@
     <title>Document</title>
   </head>
   <body>
-    <h2>제목 - {{post.title}}</h2>
-    <p>내용 - {{post.content}}</p>
-    <p>작성일 - {{post.created_at}}</p>
+    <h2>제목 - {{ post.title }}</h2>
+    <p>내용 - {{ post.content }}</p>
+    <p>작성일 - {{ post.created_at }}</p>
+    <p>작성자 - {{ post.author.nickname }}</p>
+    <p>
+      좋아요 - {{ post.like.count }} {% if request.user in post.like.all %}
+      <a href="{% url 'blog:remove-like' post.id %}">좋아요 취소</a>
+      {% else %}
+      <a href="{% url 'blog:add-like' post.id %}">좋아요</a>
+      {% endif %}
+    </p>
+    <p>
+      카테고리 - {% for category in post.category.all %} [{{ category.name }}]
+      {% empty %} 설정한 카테고리 없음 {% endfor %}
+    </p>
     <hr />
     <br />
-    <a href="{% url 'blog:update' post.id %}">수정하기 </a><br /><br />
-    <a href="{% url 'blog:delete' post.id %}">삭제하기 </a><br /><br />
-    <a href="{% url 'blog:list' %}">메인으로 이동 </a><br /><br />
+
+    <p>댓글수 : {{ post.comments.count }}</p>
+    <hr />
+    {% for comment in post.comments.all %}
+    <p>작성자 - {{ comment.author.nickname }}</p>
+    <p><b>{{ comment.content }}</b></p>
+    <p>작성일 - {{ comment.created_at }}</p>
+    <hr />
+    {% empty %}
+    <p>댓글이 없습니다</p>
+    {% endfor %}
+    <br />
+    <form method="POST" action="{% url 'blog:create-comment' post.id %}">
+      {% csrf_token %}
+      <label for="content">댓글 - </label>
+      <input type="text" name="content" id="content" />
+      <input type="submit" value="작성" />
+    </form>
+    <br />
+    <a href="{% url 'blog:update' post.id %}">수정하기</a>
+    <br /><br />
+    <a href="{% url 'blog:delete' post.id %}">삭제하기</a>
+    <br /><br />
+    <a href="{% url 'blog:list' %}">메인으로 이동</a>
+    <br /><br />
   </body>
 </html>
