@@ -6,17 +6,84 @@
     <title>Document</title>
   </head>
   <body>
-    <h2>제목 - {{ post.title }}</h2>
-    <p>내용 - {{ post.content }}</p>
-    <p>작성일 - {{ post.created_at }}</p>
+    <a href="{% url 'post:list' %}">뒤로가기</a>
+    <h2>{{ post.title }}</h2>
+    <h3>{{ post.content }}</h3>
+    <h4>{{ post.created_at }}</h4>
+<h5>
+  {% if post.anonymity %}
+    익명
+  {% else %}
+    {{ user.nickname }}
+  {% endif %}
+</h5><h5>      카테고리 {% for category in post.category.all %} [{{ category.title }}]
+      {% empty %} 설정한 카테고리 없음 {% endfor %}</h5>
+        <br />
+        {% if request.user == post.author %}
+    <a href="{% url 'post:update' post.id %}">수정하기</a>
+    <a href="{% url 'post:delete' post.id %}">삭제하기</a>
+    {% endif %}
+    <br /><br />
+
     <p>
-      {% if post.anonymity %} 익명 {% else %} <p>닉네임 - {{ user.nickname }} </p>
-      {% endif %}
+      공감 {{ post.like.count }}개 
+      
     </p>
-    <hr />
-    <br />
-    <a href="{% url 'post:update' post.id %}">수정하기</a><br /><br />
-    <a href="{% url 'post:delete' post.id %}">삭제하기</a><br /><br />
-    <a href="{% url 'post:create' %}">메인으로 이동</a><br /><br />
+    스크랩 {{ post.scrap.count }}개
+    <p>
+
+
+{% if request.user in post.like.all %}
+    <form action="{% url 'post:remove-like' post.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">공감 취소</button>
+    </form>
+{% else %}
+    <form action="{% url 'post:add-like' post.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">공감</button>
+    </form>
+{% endif %}
+
+{% if request.user in post.scrap.all %}
+    <form action="{% url 'post:remove-scrap' post.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">스크랩 취소</button>
+    </form>
+{% else %}
+    <form action="{% url 'post:add-scrap' post.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">스크랩</button>
+    </form>
+{% endif %}
+    </p>
+
+ 
+    <h4>댓글수 : {{ post.comments.count }}</h4>
+   <hr />
+  
+{% for comment in post.comments.all %}
+    {% if comment.anonymity %}
+            
+
+        <p><b>{{ comment.content }}</b>- 익명 - {{ comment.created_at }}</p>
+        {% if request.user == comment.author %}<a href="{% url 'post:delete-comment' comment.id %}">삭제하기</a>{% endif %}<br>
+    {% else %}
+        <p><b>{{ comment.content }}</b> - {{ user.nickname }} - {{ comment.created_at }}</p>
+        {% if request.user == comment.author %}<a href="{% url 'post:delete-comment' comment.id %}">삭제하기</a>{% endif %}<br>
+
+    {% endif %}
+<br>
+{% empty %}
+    <p>댓글이 없습니다</p>
+{% endfor %}
+
+    <form method="POST" action="{% url 'post:create-comment' post.id %}">
+      {% csrf_token %}
+      <input type="text" name="content" id="content" />
+      <input type="submit" value="작성" />
+      <input type="checkbox" name="anonymous" />익명<br /><br />
+    </form>
+
   </body>
 </html>

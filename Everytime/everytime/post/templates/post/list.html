@@ -3,32 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Posts List</title>
+    <title>Document</title>
   </head>
   <body>
-    {% if request.user.is_authenticated %}
+    게시판 
+    {% for category in categories %}
+    <a href="{% url 'post:posts_list' category.slug %}">{{ category.title }}</a>
+    {% endfor %}
     <br />
+    <br>
+    nickname : {% if request.user.is_authenticated %} {{ request.user.nickname}}
     <br />
+    <hr />
+    <br>
+    <a href="{% url 'accounts:my-page' %}">마이페이지</a>
     <a href="{% url 'accounts:logout' %}">로그아웃</a>
+ 
+    <hr />
+    <br>
+    <a href="{% url 'accounts:my-blog' %}">내가 작성한 글</a>
+    <a href="{% url 'post:my-scrap' %}">내가 스크랩한 글</a>
+    <a href="{% url 'post:my-like' %}">내가 좋아요 한 글</a>
+
     {% else %}
+    <br>
     <a href="{% url 'accounts:login' %}">로그인</a>
     <a href="{% url 'accounts:signup' %}">회원가입</a>
     {% endif %}
-    <br /><br /><br />
+    <br />
+    {% for category in categories %}
     <hr />
-    <h2>글 작성</h2>
-    <form method="POST" action="">
-      {% csrf_token %} 제목 - <input type="text" name="title" /><br /><br />
-      내용 - <textarea name="content"></textarea
-      ><input type="checkbox" name="anonymous" />익명<br /><br />
-      <input type="submit" value="작성하기" />
-    </form>
-    <hr />
-    {% for post in posts %} {% load humanize %}
-    <h2><a href="{% url 'post:detail' post.id %}">{{ post.title }}</a></h2>
-    <p>{{ post.content }}</p>
-    <p>{{ post.created_at|naturaltime }}</p>
-    <hr />
-    {% empty %} 작성된 글이 없습니다 {% endfor %}
+    <h2>
+     <a href="{% url 'post:posts_list' category.slug %}">{{ category.title }}</a>
+    </h2>
+    {% for post in category.posts.all|slice:":4" %}
+
+    <p><a href="{% url 'post:detail' post.id %}">{{ post.title }}</a></p>
+    {% empty %}
+    <p>작성된 글이 없습니다</p>
+    {% endfor %} {% endfor %} </div>
   </body>
 </html>

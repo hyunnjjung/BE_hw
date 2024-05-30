@@ -23,14 +23,21 @@ def login_view(request):
     form = AuthenticationForm(request, data = request.POST)
     if form.is_valid():
         login(request, form.user_cache)
-        return redirect('post:create')
+        return redirect('post:list')
     return render(request, 'accounts/login.html', {'form': form})
 
 def logout_view(request):
     if request.user.is_authenticated:
         logout(request)
-    return redirect('post:create')
+    return redirect('post:list')
 
 
 def mypage(request):
     return render(request, 'accounts/mypage.html')
+
+def myblog(request):
+    posts = request.user.posts.all().order_by('-id')
+    return render(request, 'accounts/myblog.html', {'posts' : posts})
+
+def user_info(request):
+    return render(request, 'accounts/user_info.html')

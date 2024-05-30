@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <a href="{% url 'post:list' %}">메인페이지로 돌아가기</a>
+    <br />
+    <br />
+    {% for category in categories %}
+    <a href="{% url 'post:posts_list' category.slug %}">{{ category.title }}</a>
+    {% endfor %}
+    <br />
+    <br />
+    {% if request.user.is_authenticated %}
+
+    <a href="{% url 'accounts:logout' %}">로그아웃</a>
+    <a href="{% url 'accounts:mypage' %}">마이페이지</a>
+
+    {% else %}
+    <a href="{% url 'accounts:login' %}">로그인</a>
+    <a href="{% url 'accounts:signup' %}">회원가입</a>
+    {% endif %}
+    <br />
+    <hr />
+    <h1>{{ category.title }} 게시판</h1>
+    <br />
+    <form method="POST" action="{% url 'post:create' category.slug %}">
+      {% csrf_token %}
+      <input type="text" placeholder="제목입력" name="title" />
+      <br />
+      <textarea name="content" placeholder="본문입력" name="context">
+      </textarea>
+      <input type="checkbox" name="anonymous" /> 익명
+      <input type="submit" value="작성 완료" />
+    </form>
+
+    <hr />
+
+    {% for post in posts %} {% load humanize %}
+    <h2><a href="{% url 'post:detail' post.id %}">{{ post.title }}</a></h2>
+    <h3>{{ post.content }}</h3>
+    <h5>{{ post.created_at|naturaltime }}</h5>
+    <p>댓글 {{ post.comments.count }}개 공감 {{ post.like.count }}개</p>
+    <hr />
+    {% empty %} 작성된 글이 없습니다 {% endfor %}
+  </body>
+</html>
