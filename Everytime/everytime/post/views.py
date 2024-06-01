@@ -11,16 +11,39 @@ def posts_list(request, slug):
 
 def list(request):
     categories = Category.objects.all()
+    
+    category_in_posts = {}
+    for category in categories:
+        posts = category.posts.order_by('-id')
+        category_in_posts[category] = posts
 
-    category_id = request.GET.get('category')
+    return render(request, 'post/list.html', {'category_in_posts': category_in_posts, 'categories' : categories})
 
-    if category_id:
-        category = get_object_or_404(Category, id = category_id)
-        posts = category.posts.all().order_by('-id')
-    else:
-        posts = Post.objects.all().order_by('-id')
 
-    return render(request, 'post/list.html', {'posts': posts, 'categories': categories})
+@login_required
+def create(request):
+    categories = Category.objects.all() 
+
+    if request.method == "POST":
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        anonymity = request.POST.get('anonymity')  == 'on'
+
+        categories_ids = request.POST.getlist('category')
+        category_list = [get_object_or_404(Category, id = category_id) for category_id in categories_ids]
+
+        post = Post.objects.create(
+            title = title,
+            content = content,
+            anonymity = anonymity,
+            author = request.user,
+        )
+
+        for category in category_list:
+            post.category.add(category)
+
+        return redirect('post:list')
+    return render(request, 'post/post_list.html', {'categories': categories})
 
 
 @login_required

@@ -31,16 +31,21 @@
     <a href="{% url 'accounts:signup' %}">회원가입</a>
     {% endif %}
     <br />
-    {% for category in categories %}
+    {% for category, posts in category_in_posts.items %}
     <hr />
     <h2>
      <a href="{% url 'post:posts_list' category.slug %}">{{ category.title }}</a>
     </h2>
-    {% for post in category.posts.all|slice:":4" %}
+    {% for post in posts|slice:":4" %}
 
     <p><a href="{% url 'post:detail' post.id %}">{{ post.title }}</a></p>
     {% empty %}
     <p>작성된 글이 없습니다</p>
     {% endfor %} {% endfor %} </div>
+
+
   </body>
 </html>
+
+
+
