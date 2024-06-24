@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from .views import add_scrap, delete_comment, list, create, detail, myscrap, remove_scrap, update, delete, create_comment, add_like, remove_like, mylike
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'post'
 urlpatterns = [
@@ -19,4 +21,4 @@ urlpatterns = [
     path('my-scrap/', myscrap, name = "my-scrap"),
     path('<slug:slug>/', views.posts_list, name='posts_list')
     
-]
+]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

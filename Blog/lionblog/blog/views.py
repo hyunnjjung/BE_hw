@@ -24,14 +24,20 @@ def create(request):
     if request.method == "POST":
         title = request.POST.get('title')
         content = request.POST.get('content')
+        video = request.FILES.get('video')
+        image = request.FILES.get('image')
 
         category_ids = request.POST.getlist('category')
         category_list = [get_object_or_404(Category, id = category_id) for category_id in category_ids]
+
+
 
         post = Post.objects.create(
             title = title,
             content = content,
             author = request.user,
+            image = image,
+            video = video
         )
 
         for category in category_list:
@@ -49,6 +55,16 @@ def update(request, id):
     if request.method == "POST":
         post.title = request.POST.get('title')
         post.content = request.POST.get('content')
+        video = request.FILES.get('video')
+        image = request.FILES.get('image')
+
+        if video:
+            post.video.delete()
+            post.video = video
+        if image:
+            post.image.delete()
+            post.image = image
+
         post.save()
         return redirect('blog:detail', id)
     return render(request, 'blog/update.html', {'post' :post})

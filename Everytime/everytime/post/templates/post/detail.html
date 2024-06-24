@@ -11,6 +11,14 @@
     <h3>{{ post.content }}</h3>
     <h4>{{ post.created_at }}</h4>
 <h5>
+      {% if post.image %}
+    <img width="320" height="240" src="{{ post.image.url }}" />
+    {% endif %} {% if post.video %}
+    <video width="320" height="240" controls>
+      <source src="{{ post.video.url }}" type="video/mp4" />
+    </video>
+    {% endif %}
+
   {% if post.anonymity %}
     익명
   {% else %}
@@ -31,7 +39,6 @@
     </p>
     스크랩 {{ post.scrap.count }}개
     <p>
-
 
 {% if request.user in post.like.all %}
     <form action="{% url 'post:remove-like' post.id %}" method="post">

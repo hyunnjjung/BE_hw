@@ -27,12 +27,18 @@
     <hr />
     <h1>{{ category.title }} 게시판</h1>
     <br />
-    <form method="POST" action="{% url 'post:create' category.slug %}">
+    <form
+      method="POST"
+      action="{% url 'post:create' category.slug %}"
+      enctype="multipart/form-data"
+    >
       {% csrf_token %}
       <input type="text" placeholder="제목입력" name="title" />
       <br />
-      <textarea name="content" placeholder="본문입력" name="context">
-      </textarea>
+      <textarea name="content" placeholder="본문입력" name="context"> </textarea
+      ><br />
+      동영상 - <input type="file" name="video" /><br /><br />
+      사진 - <input type="file" name="image" /><br /><br />
       <input type="checkbox" name="anonymous" /> 익명
       <input type="submit" value="작성 완료" />
     </form>

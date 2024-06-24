@@ -28,6 +28,8 @@ def create(request):
         title = request.POST.get('title')
         content = request.POST.get('content')
         anonymity = request.POST.get('anonymity')  == 'on'
+        video = request.FILES.get('video')
+        image = request.FILES.get('image')
 
         categories_ids = request.POST.getlist('category')
         category_list = [get_object_or_404(Category, id = category_id) for category_id in categories_ids]
@@ -37,6 +39,8 @@ def create(request):
             content = content,
             anonymity = anonymity,
             author = request.user,
+            video = video,
+            image = image
         )
 
         for category in category_list:
@@ -58,13 +62,17 @@ def create(request, slug):
         title = request.POST.get('title')
         content = request.POST.get('content')
         anonymity = request.POST.get('anonymous') == 'on'
+        video = request.FILES.get('video')
+        image = request.FILES.get('image')
 
         # 새로운 글 생성
         new_post = Post.objects.create(
             title=title,
             content=content,
             author=request.user,
-            anonymity=anonymity
+            anonymity=anonymity,
+            video = video,
+            image = image
         )
         # 해당 글을 카테고리와 연결
         new_post.save()  # 먼저 저장해야 새로운 포스트의 id가 생성됨
@@ -84,6 +92,16 @@ def update(request, id):
     if request.method == "POST":
         post.title = request.POST.get('title')
         post.content = request.POST.get('content')
+        video = request.FILES.get('video')
+        image = request.FILES.get('image')
+
+        if video:
+            post.video.delete()
+            post.video = video
+        if image:
+            post.image.delete()
+            post.image = image
+
         post.save()
         return redirect('post:detail', id)
     return render(request, 'post/update.html', {'post' :post})
